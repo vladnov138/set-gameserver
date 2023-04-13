@@ -14,6 +14,11 @@ class RegisterController extends Controller
      */
     public function __invoke(Request $request)
     {
+        if (empty($request['nickname']) || empty($request['password']))
+            return ["success" => false,
+            "exception" => [
+                "message" => "Nickname and passwords fields are required"
+            ]];
         if (count(User::select('name')->where('name', $request['nickname'])->get()) === 0) {
             return $this->register($request['nickname'], $request['password']);
         } else {
@@ -35,6 +40,7 @@ class RegisterController extends Controller
 
         $user = User::create($user_data);
         return [
+            'success' => true,
             'nickname' => $user->name,
             'accessToken' => $user->api_token
         ];

@@ -31,6 +31,7 @@ class AuthenticateController extends Controller
         $user_data = User::select('password', 'api_token')->where('name', $login)->get()[0];
         if (password_verify($password, $user_data['password'])) {
             return [
+                'success' => true,
                 'nickname' => $login,
                 'token' => $user_data['api_token']
             ];
