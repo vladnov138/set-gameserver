@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\ListController;
+use App\Http\Controllers\EnteringController;
+use App\Http\Controllers\CreatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/user/register', RegisterController::class);
 Route::post('/user/auth', AuthenticateController::class);
+
+Route::post('/set/room/create', CreatingController::class);
+Route::post('/set/room/list', ListController::class);
+Route::post('/set/room/enter', EnteringController::class);
+
+Route::post('/set/field', AuthenticateController::class);
+Route::post('/set/pick', AuthenticateController::class);

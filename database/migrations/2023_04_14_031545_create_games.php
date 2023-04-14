@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Query\Expression;
 
 return new class extends Migration
 {
@@ -11,16 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255)
                         ->unique();
-            $table->string('password', 255);
-            $table->string('api_token', 80)
+            $table->string('creator_id', 255)
                         ->unique();
-            $table->boolean('is_playing')
-                        ->default(false);
-            $table->integer('room_id')
+            $table->json('players')
+                        ->default(new Expression('(JSON_ARRAY())'))
                         ->nullable();
             $table->timestamps();
         });
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('games');
     }
 };
