@@ -12,15 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('games', function (Blueprint $table) {
+        Schema::create('scores', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255)
-                        ->unique();
-            $table->integer('creator_id')
-                        ->unique();
-            $table->json('players')
-                        ->default(new Expression('(JSON_ARRAY())'))
-                        ->nullable();
+            $table->integer('room_id')
+                ->unique();
+            $table->json('players_scores')
+                ->default(new Expression('(JSON_ARRAY())'))
+                ->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('games');
+        Schema::dropIfExists('scores');
     }
 };

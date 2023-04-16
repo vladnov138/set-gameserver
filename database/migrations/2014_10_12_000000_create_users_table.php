@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('password', 255);
             $table->string('api_token', 80)
                         ->unique();
-            $table->boolean('is_playing')
-                        ->default(false);
             $table->integer('room_id')
                         ->nullable();
             $table->timestamps();

@@ -3,28 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
-use App\Exceptions\FieldException;
+use App\Exceptions\FieldTokenException;
 use Illuminate\Http\Request;
 use App\Models\Game;
 use App\Models\User;
+use App\Models\Card;
+use App\Models\Score;
 
 class CreatingController extends Controller
 {
+    private $cards_limit = 81;
+    private $properties_limit = 3;
+    private $field_cards_limit = 12;
+
     /**
      * Handle the incoming request.
      */
     public function __invoke(Request $request)
     {
-        if (empty($request['accessToken']) || empty($request['roomTitle']))
-            throw new FieldException();
-        $result = User::select('id')->where('api_token', $request['accessToken'])->get();
-        if (empty($result[0]) || empty($result[0]['id']))
-            throw new ApiException('Wrong accessToken');
-
-        $id = $result[0]['id'];
+        $this->check_token($request);
+        $this->check_room_title($request);
         
-        if (User::select('is_playing')->where('id', $id)->get()[0]['is_playing'])
-            throw new ApiException('The user is playing in another room');
+        $id = User::select('id')->where('api_token', $request['accessToken'])->get()[0]['id'];
+
+        $this->check_user_playing_room($id);
 
         $game = Game::create($data = [
             'name' => $request['roomTitle'],
@@ -33,11 +35,42 @@ class CreatingController extends Controller
                 $id
             ])
         ]);
-        User::where('id', $id)->limit(1)->update(['is_playing' => true, 'room_id' => $game->id]);
+        User::where('id', $id)->limit(1)->update(['room_id' => $game->id]);
+        Score::create(['room_id' => $game->id]);
+        $this->fill_cards($game->id);
         return [
             "success" => true,
             "exception" => null,
             "gameId" => $game->id
         ];
+    }
+
+    private function fill_cards(int $room_id)
+    {
+        $cards = [];
+        for ($color = 1, $id = 1; $color <= $this->properties_limit; $color++)
+            for ($shape = 1; $shape <= $this->properties_limit; $shape++)
+                for ($fill = 1; $fill <= $this->properties_limit; $fill++)
+                    for ($count = 1; $count <= $this->properties_limit; $count++, $id++)
+                        $cards[] = [
+                            'id' => $id,
+                            'color' => $color,
+                            'shape' => $shape,
+                            'fill' => $fill,
+                            'count' => $count
+                        ];
+        shuffle($cards);
+        $field_cards = array_slice($cards, 0, $this->field_cards_limit);
+        array_splice($cards, 0, $this->field_cards_limit);
+
+        Card::create([
+            'room_id' => $room_id,
+            'cards' => json_encode([
+                $cards
+            ]),
+            'field_cards' => json_encode([
+                $field_cards
+            ])
+        ]);
     }
 }

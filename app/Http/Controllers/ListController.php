@@ -15,13 +15,9 @@ class ListController extends Controller
      */
     public function __invoke(Request $request)
     {
-        if (empty($request['accessToken']))
-            throw new FieldException();
-        $result = User::select('id')->where('api_token', $request['accessToken'])->get();
-        if (empty($result[0]) || empty($result[0]['id']))
-            throw new ApiException('Wrong accessToken');
+        $this->check_token($request);
 
-        $games = Game::select('id')->get();
+        $games = Game::select('id', 'name')->get();
         return [
             'success' => true,
             'expection' => null,

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Exceptions\FieldException;
+use App\Exceptions\FieldTokenException;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use App\Models\Game;
@@ -15,26 +15,20 @@ class EnteringController extends Controller
      */
     public function __invoke(Request $request)
     {
-        if (empty($request['accessToken']) || empty($request['gameId']))
-            throw new FieldException();
-        $result = User::select('id')->where('api_token', $request['accessToken'])->get();
-        if (empty($result[0]) || empty($result[0]['id']))
-            throw new ApiException('Wrong accessToken');
+        $this->check_token($request);
 
-        $user_id = $result[0]['id'];
+        $user_id = User::select('id')->where('api_token', $request['accessToken'])->get();
 
+        $this->check_game_id($request['gameId'] ?? '');
         $result = Game::select('id', 'players')->where('id', $request['gameId'])->get();
-        if (empty($result[0]) || empty($result[0]['id']))
-            throw new ApiException('Wrong game ID');
         $game_id = $result[0]['id'];
-        
-        if (User::select('is_playing')->where('id', $user_id)->get()[0]['is_playing'])
-            throw new ApiException('The user is playing in another room');
+
+        $this->check_user_playing_room($user_id);
 
         $players = json_decode($result[0]['players']);
         $players[] = $user_id;
         Game::where('id', $game_id)->limit(1)->update(['players' => json_encode($players)]);
-        User::where('id', $user_id)->limit(1)->update(['is_playing' => true, 'room_id' => $game_id]);
+        User::where('id', $user_id)->limit(1)->update(['room_id' => $game_id]);
 
         return [
             'success' => true,
