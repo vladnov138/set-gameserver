@@ -35,7 +35,7 @@ class GetController extends Controller
             Card::select('field_cards')->where('room_id', $room_id)->get()[0]["field_cards"],
             true
             );
-        if (count($field_cards) > 21)
+        if (count($field_cards) === 21)
             throw new ApiException('Set exists in the field');
         $cards = json_decode(Card::select('cards')->where('room_id', $room_id)->get()[0]['cards'], true);
         if (count($cards) === 0)

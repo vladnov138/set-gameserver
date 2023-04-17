@@ -28,6 +28,7 @@ class Controller extends BaseController
     private const TOKEN_REQUIRED = 'accessToken field required';
     private const TITLE_REQUIRED = 'roomTitle field required';
     private const GAME_FINISHED = 'The game have been already finished';
+    
 
     public function check_game_process($room_id) {
         if (!Game::select('is_processing')->where('id', $room_id)->get()[0]['is_processing'])
