@@ -7,6 +7,7 @@ use App\Exceptions\FieldTokenException;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use App\Models\Game;
+use App\Models\Score;
 
 class EnteringController extends Controller
 {
@@ -29,10 +30,13 @@ class EnteringController extends Controller
         $players[] = $user_id;
         Game::where('id', $game_id)->limit(1)->update(['players' => json_encode($players)]);
         User::where('id', $user_id)->limit(1)->update(['room_id' => $game_id]);
+        $scores = json_decode(Score::select('players_scores')->where('id', $game_id)[0]['scores'], true);
+        $scores[$user_id] = 0;
+        Score::where('id', $game_id)->limit(1)->update(['players_scores' => json_encode($scores)]);
 
         return [
             'success' => true,
-            'expection' => null,
+            'exception' => null,
             'gameId' => $game_id
         ];
     }

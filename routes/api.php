@@ -9,6 +9,7 @@ use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\SetAvailableController;
 use App\Http\Controllers\SetController;
+use App\Http\Controllers\GetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,5 +39,8 @@ Route::post('set/room/leave', LeaveController::class);
 
 Route::post('/set/field', FieldController::class);
 Route::post('/set/pick', SetController::class);
+Route::post('/set/get', GetController::class);
 
 Route::post('set/setavailable', SetAvailableController::class);
+
+Route::post('set/test/find_set', SearchingSetController::class);

@@ -36,7 +36,7 @@ class CreatingController extends Controller
             ])
         ]);
         User::where('id', $id)->limit(1)->update(['room_id' => $game->id]);
-        Score::create(['room_id' => $game->id]);
+        Score::create(['room_id' => $game->id, 'players_scores' => json_encode([$id => 0])]);
         $this->fill_cards($game->id);
         return [
             "success" => true,
@@ -65,12 +65,12 @@ class CreatingController extends Controller
 
         Card::create([
             'room_id' => $room_id,
-            'cards' => json_encode([
+            'cards' => json_encode(
                 $cards
-            ]),
-            'field_cards' => json_encode([
+            ),
+            'field_cards' => json_encode(
                 $field_cards
-            ])
+            )
         ]);
     }
 }

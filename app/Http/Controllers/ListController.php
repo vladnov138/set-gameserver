@@ -20,7 +20,7 @@ class ListController extends Controller
         $games = Game::select('id', 'name')->get();
         return [
             'success' => true,
-            'expection' => null,
+            'exception' => null,
             'games' => $games
         ];
     }

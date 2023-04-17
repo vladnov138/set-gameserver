@@ -25,6 +25,7 @@ class AuthenticateController extends Controller
                 throw new ApiException($this->auth_exception);
             return [
                 'success' => true,
+                'exception' => null,
                 'nickname' => $request['login'],
                 'token' => $user_data['api_token']
             ];

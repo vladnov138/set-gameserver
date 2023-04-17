@@ -21,6 +21,8 @@ return new class extends Migration
             $table->json('players')
                         ->default(new Expression('(JSON_ARRAY())'))
                         ->nullable();
+            $table->boolean('is_processing')
+                        ->default(true);
             $table->timestamps();
         });
     }
