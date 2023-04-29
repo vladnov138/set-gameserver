@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Game;
 use App\Models\Card;
 use App\Models\Score;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\App;
 
 class SetController extends Controller
 {
@@ -45,16 +47,18 @@ class SetController extends Controller
             if ($this->is_game_finished($game_id, $field_cards))
                 Game::where('id', $game_id)->limit(1)->update(['is_processing' => false]);
         }
+
+
         return [
             'success' => true,
             'exception' => null,
-            'isSet' => $flag_isSet,
-            'field' => $field_cards
+            'isSet' => $flag_isSet
         ];
     }
 
     private function find_cards_by_id(&$field_cards, $cards)
     {
+        $set_cards = [];
         for ($i = 0; $i < count($field_cards); $i++)
             if (in_array($field_cards[$i]['id'], [$cards[0], $cards[1], $cards[2]])) {
                 $set_cards[] = $field_cards[$i];
@@ -66,16 +70,15 @@ class SetController extends Controller
 
     public static function is_set(array $set_cards)
     {
-        $flag_isSet = true;
+        // $flag_isSet = true;
         foreach (SetController::PROPERTIES as $property)
             if (!($set_cards[0][$property] === $set_cards[1][$property] && $set_cards[1][$property] ===
                 $set_cards[2][$property] || $set_cards[0][$property] !== $set_cards[1][$property] &&
                 $set_cards[1][$property] !== $set_cards[2][$property] &&
                 $set_cards[0][$property] !== $set_cards[2][$property])) {
-                $flag_isSet = false;
-                break;
+                return false;
             }
-        return $flag_isSet;
+        return true;
     }
 
     private function update_score(int $user_id, int $game_id)
@@ -95,9 +98,9 @@ class SetController extends Controller
         }
     }
 
-    private function is_game_finished(int $room_id, array $field_cards)
+    private function is_game_finished(int $room_id, $field_cards)
     {
-        $cards = json_decode(Card::select('cards')->where('room_id', $room_id)->get()[0]['cards'], true);
+        $cards = json_decode(Card::select('cards')->where('room_id', $room_id)->get()[0]['cards']);
         $is_set_exists = false;
         if (count($cards) === 0)
             for ($i = 0; $i < count($field_cards); $i++)
@@ -105,7 +108,7 @@ class SetController extends Controller
                     for ($k = $j + 1; $k < count($field_cards); $k++) {
                         $is_set_exists = SetController::is_set([$field_cards[$i], $field_cards[$j], $field_cards[$k]]);
                         if ($is_set_exists)
-                            return $is_set_exists;
+                            return true;
                     }
         return false;
     }
