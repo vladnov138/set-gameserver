@@ -6,6 +6,9 @@ use App\Exceptions\ApiException;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Card;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\App;
+use App\Providers\AppServiceProvider;
 
 class GetController extends Controller
 {
@@ -21,12 +24,11 @@ class GetController extends Controller
         $this->check_if_user_playing($id);
         $room_id = $result[0]['room_id'];
         $this->check_game_process($room_id);
-        $field_cards = GetController::get_field_cards($room_id);
+        GetController::get_field_cards($room_id);
         
         return [
             'success' => true,
-            'exception' => null,
-            'fieldCards' => $field_cards
+            'exception' => null
         ];
     }
 
@@ -50,7 +52,6 @@ class GetController extends Controller
                 $field_cards
                 )
             ]);
-        return $field_cards;
     }
     
 }

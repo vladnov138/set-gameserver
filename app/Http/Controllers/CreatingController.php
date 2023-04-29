@@ -22,14 +22,15 @@ class CreatingController extends Controller
     public function __invoke(Request $request)
     {
         $this->check_token($request);
-        $this->check_room_title($request);
         
-        $id = User::select('id')->where('api_token', $request['accessToken'])->get()[0]['id'];
+        $user = User::select('id', 'name')->where('api_token', $request['accessToken'])->get()[0];
+        $id = $user['id'];
+        $title = isset($request['roomTitle']) ? $request['roomTitle'] : $user['name'] . ' room';
 
         $this->check_user_playing_room($id);
 
         $game = Game::create($data = [
-            'name' => $request['roomTitle'],
+            'name' => $title,
             'creator_id' => $id,
             'players' => json_encode([
                 $id

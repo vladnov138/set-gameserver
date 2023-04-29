@@ -15,7 +15,7 @@ use App\Models\Game;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-
+    
     protected const GET_CARDS_LIMIT = 3;
 
     private const WRONG_TOKEN = 'Wrong accessToken';
@@ -53,8 +53,8 @@ class Controller extends BaseController
             throw new ApiException(Controller::WRONG_GAME_ID);
     }
 
-    public function check_user_playing_room(int $id) {
-        if (!is_null(User::select('room_id')->where('id', $id)->get()[0]['room_id']))
+    public function check_user_playing_room(int $user_id) {
+        if (!is_null(User::select('room_id')->where('id', $user_id)->get()[0]['room_id']))
             throw new ApiException(Controller::ANOTHER_ROOM);
     }
 
