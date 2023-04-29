@@ -39,16 +39,8 @@ nano .env
 ```
 You may use vim or another text editors instead of nano.
 
-8. Write the next values and write your database host name, database, username and password:
+8. Write your database, username and password:
 ```
-APP_NAME=Set-gameserver
-APP_ENV=dev
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-
-LOG_CHANNEL=stack
-
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
@@ -56,20 +48,21 @@ DB_DATABASE=database
 DB_USERNAME=username
 DB_PASSWORD=password
 ```
+***DON'T CHANGE THE DB_HOST IF YOU DON'T CHANGE THE DOCKER-COMPOSE.YAML***
 
 9. Build the server:
 ```
 docker-compose build app
 ```
 
-10. Create the dependicies:
-```
-docker-compose exec app composer install
-```
-
-11. Start the server:
+10. Start the server:
 ```
 docker-compose up -d
+```
+
+11. Create the dependicies:
+```
+docker-compose exec app composer install
 ```
 
 You may find the information about server services via:
