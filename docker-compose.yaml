@@ -20,19 +20,18 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: set-server-db
-    restart: unless-stopped
+    container_name: db
+    restart: always
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      MYSQL_DATABASE: set_game
+      MYSQL_ROOT_PASSWORD: password
     volumes:
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
       - set-server
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
 
   nginx:
     image: nginx:latest
