@@ -8,7 +8,7 @@ For deploying the server do the next steps:
 2. Go to the home directory and download the server zip archive:  
 ```
 cd ~
-curl -L https://github.com/do-community/travellist-laravel-demo/archive/tutorial-1.0.1.zip -o travellist.zip
+curl -L https://github.com/vladnov138/set-gameserver/archive/refs/heads/set-server-via-db.zip -o set-gameserver.zip
 ```
 
 3. Download the unzip utilite:  
@@ -19,13 +19,13 @@ sudo apt install unzip
 
 4. Unzip the archive:
 ```
-unzip travellist.zip
-mv travellist-laravel-demo-tutorial-1.0.1 travellist-demo
+unzip set-gameserver.zip
+mv set-gameserver-set-server-via-db set-gameserver
 ```
 
 5. Go to the server directory:
 ```
-cd travellist-demo
+cd set-gameserver
 ```
 
 6. Set the .env file. Make the .env.example copy and name it as .env:
@@ -41,7 +41,7 @@ You may use vim or another text editors instead of nano.
 
 8. Write the next values and write your database host name, database, username and password:
 ```
-APP_NAME=Travellist
+APP_NAME=Set-gameserver
 APP_ENV=dev
 APP_KEY=
 APP_DEBUG=true
@@ -52,8 +52,8 @@ LOG_CHANNEL=stack
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
-DB_DATABASE=travellist
-DB_USERNAME=travellist_user
+DB_DATABASE=database
+DB_USERNAME=username
 DB_PASSWORD=password
 ```
 
@@ -76,3 +76,5 @@ You may find the information about server services via:
 ```
 docker-compose ps
 ```
+  
+- This instruction was made according by [article](https://www.digitalocean.com/community/tutorials/how-to-install-and-set-up-laravel-with-docker-compose-on-ubuntu-20-04-ru)
